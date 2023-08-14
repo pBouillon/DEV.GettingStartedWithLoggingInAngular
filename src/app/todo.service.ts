@@ -1,9 +1,12 @@
-import { Injectable, signal } from "@angular/core";
+import { Injectable, inject, signal } from "@angular/core";
 
+import { LoggerService } from "./logger.service";
 import { TodoItem } from "./todo-item.model";
 
 @Injectable({ providedIn: "root" })
 export class TodoService {
+  readonly #logger = inject(LoggerService);
+
   readonly #todoItems = signal<TodoItem[]>([
     {
       id: 1,
@@ -22,7 +25,7 @@ export class TodoService {
   delete(idToDelete: number): void {
     const isKnownId = this.#todoItems().some(({ id }) => id === idToDelete);
     if (!isKnownId) {
-      console.warn("Unknown id #%d", idToDelete);
+      this.#logger.warning("Unknown id #%d", idToDelete);
       return;
     }
 
@@ -30,13 +33,13 @@ export class TodoService {
       todoItems.filter(({ id }) => id !== idToDelete)
     );
 
-    console.log("Todo Item #%d deleted", idToDelete);
+    this.#logger.info("Todo Item #%d deleted", idToDelete);
   }
 
   setComplete(idToSet: number, isDone: boolean): void {
     const isKnownId = this.#todoItems().some(({ id }) => id === idToSet);
     if (!isKnownId) {
-      console.warn("Unknown id #%d", idToSet);
+      this.#logger.warning("Unknown id #%d", idToSet);
       return;
     }
 
@@ -46,7 +49,7 @@ export class TodoService {
       )
     );
 
-    console.log(
+    this.#logger.info(
       "Todo Item #%d status set to %s",
       idToSet,
       isDone ? "done" : "pending"
