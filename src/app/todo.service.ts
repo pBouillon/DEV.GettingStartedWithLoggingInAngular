@@ -23,6 +23,8 @@ export class TodoService {
     this.#todoItems.update((todoItems) =>
       todoItems.filter(({ id }) => id !== idToDelete)
     );
+
+    console.log("Todo Item #%d deleted", idToDelete);
   }
 
   setComplete(idToSet: number, isDone: boolean): void {
@@ -30,6 +32,12 @@ export class TodoService {
       todoItems.map((item) =>
         item.id === idToSet ? { ...item, isDone } : item
       )
+    );
+
+    console.log(
+      "Todo Item #%d status set to %s",
+      idToSet,
+      isDone ? "done" : "pending"
     );
   }
 }
