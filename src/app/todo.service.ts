@@ -20,6 +20,12 @@ export class TodoService {
   todoItems = this.#todoItems.asReadonly();
 
   delete(idToDelete: number): void {
+    const isKnownId = this.#todoItems().some(({ id }) => id === idToDelete);
+    if (!isKnownId) {
+      console.warn("Unknown id #%d", idToDelete);
+      return;
+    }
+
     this.#todoItems.update((todoItems) =>
       todoItems.filter(({ id }) => id !== idToDelete)
     );
@@ -28,6 +34,12 @@ export class TodoService {
   }
 
   setComplete(idToSet: number, isDone: boolean): void {
+    const isKnownId = this.#todoItems().some(({ id }) => id === idToSet);
+    if (!isKnownId) {
+      console.warn("Unknown id #%d", idToSet);
+      return;
+    }
+
     this.#todoItems.update((todoItems) =>
       todoItems.map((item) =>
         item.id === idToSet ? { ...item, isDone } : item
